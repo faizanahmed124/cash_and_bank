@@ -1,0 +1,1 @@
+cash_and_bank.patches.v0_0.add_mode_of_payment_type_field

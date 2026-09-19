@@ -1,0 +1,356 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-08-18 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "posting_date",
+  "column_break_1",
+  "amended_from",
+  "section_break_party",
+  "supplier",
+  "payable_account",
+  "column_break_party",
+  "purchase_invoice",
+  "invoice_date",
+  "payment_nature",
+  "section_break_po",
+  "purchase_orders",
+  "section_break_mode",
+  "payment_mode",
+  "column_break_mode",
+  "mode_of_payment",
+  "section_break_amounts",
+  "value_ex_tax",
+  "sales_tax_rate",
+  "sales_tax",
+  "total_value",
+  "column_break_amounts",
+  "less_advance",
+  "itax_rate",
+  "itax_amount",
+  "stw_rate",
+  "stw_amount",
+  "other_deduction",
+  "net_payment",
+  "in_words",
+  "section_break_docs",
+  "documents_attached",
+  "section_break_signoff",
+  "checked_by",
+  "column_break_signoff",
+  "approved_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "no_copy": 1,
+   "options": "CB-AFP-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Dated",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Approval for Payment",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_party",
+   "fieldtype": "Section Break",
+   "label": "Payee"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "In favour of M/S (Supplier)",
+   "options": "Supplier",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payable_account",
+   "fieldtype": "Link",
+   "label": "On A/C (Payable Account)",
+   "options": "Account",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_party",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "purchase_invoice",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Against Invoice No.",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fieldname": "invoice_date",
+   "fieldtype": "Date",
+   "label": "Invoice Dated",
+   "read_only": 1
+  },
+  {
+   "default": "Against Purchase Invoice",
+   "fieldname": "payment_nature",
+   "fieldtype": "Select",
+   "label": "Payment Nature",
+   "options": "Advance\nAgainst Purchase Invoice\nPartial Payment\nFinal Payment\nOther",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_po",
+   "fieldtype": "Section Break",
+   "label": "Purchase Orders (reference only)"
+  },
+  {
+   "fieldname": "purchase_orders",
+   "fieldtype": "Table",
+   "label": "Purchase Orders",
+   "options": "Approval for Payment Purchase Order"
+  },
+  {
+   "fieldname": "section_break_mode",
+   "fieldtype": "Section Break",
+   "label": "Payment Mode"
+  },
+  {
+   "default": "Bank",
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Payment Mode",
+   "options": "Bank\nCash",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_mode",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_amounts",
+   "fieldtype": "Section Break",
+   "label": "Amount Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "value_ex_tax",
+   "fieldtype": "Currency",
+   "label": "Value Ex. Sales Tax",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "default": "18",
+   "fieldname": "sales_tax_rate",
+   "fieldtype": "Percent",
+   "label": "Sales Tax Rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "sales_tax",
+   "fieldtype": "Currency",
+   "label": "Sales Tax",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "total_value",
+   "fieldtype": "Currency",
+   "label": "TOTAL Value",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_amounts",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "less_advance",
+   "fieldtype": "Currency",
+   "label": "Less Advance (if any)",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "itax_rate",
+   "fieldtype": "Percent",
+   "label": "Less I. Tax Withheld Rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "itax_amount",
+   "fieldtype": "Currency",
+   "label": "I. Tax Withheld Amount",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "stw_rate",
+   "fieldtype": "Percent",
+   "label": "Less Sales Tax Withheld Rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "stw_amount",
+   "fieldtype": "Currency",
+   "label": "Sales Tax Withheld Amount",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "default": "0",
+   "fieldname": "other_deduction",
+   "fieldtype": "Currency",
+   "label": "Other Deduction",
+   "options": "Company:company:default_currency"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "net_payment",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Net Payment",
+   "options": "Company:company:default_currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "in_words",
+   "fieldtype": "Data",
+   "label": "In Words",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_docs",
+   "fieldtype": "Section Break",
+   "label": "List of Documents Attached (tick)"
+  },
+  {
+   "fieldname": "documents_attached",
+   "fieldtype": "Table",
+   "label": "Documents Attached",
+   "options": "Approval for Payment Document"
+  },
+  {
+   "fieldname": "section_break_signoff",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "checked_by",
+   "fieldtype": "Link",
+   "label": "Checked By",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_signoff",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Managing Director (Approved By)",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-08-18 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Cash and Bank",
+ "name": "Approval for Payment",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts User",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "supplier",
+ "track_changes": 1
+}

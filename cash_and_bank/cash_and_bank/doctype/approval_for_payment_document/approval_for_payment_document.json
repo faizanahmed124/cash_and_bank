@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "creation": "2026-08-18 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "document_label",
+  "linked_doctype",
+  "attached"
+ ],
+ "fields": [
+  {
+   "fieldname": "document_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Document",
+   "read_only": 1
+  },
+  {
+   "fieldname": "linked_doctype",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Reference",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "attached",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Attached"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-18 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Cash and Bank",
+ "name": "Approval for Payment Document",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
