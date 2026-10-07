@@ -1,7 +1,8 @@
 {
  "charts": [],
- "content": "[{\"id\":\"hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Cash &amp; Bank</b></span>\",\"col\":12}},{\"id\":\"sub\",\"type\":\"paragraph\",\"data\":{\"text\":\"Click a section below to open the matching filtered list.\",\"col\":12}}]",
- "creation": "2026-08-18 10:00:00.000000",
+ "content": "[{\"id\":\"hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Cash &amp; Bank</b></span>\",\"col\":12}},{\"id\":\"sub\",\"type\":\"paragraph\",\"data\":{\"text\":\"Click a section below to open the matching filtered list.\",\"col\":12}},{\"id\":\"MjN7qIu0m2\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"po\",\"col\":4}},{\"id\":\"D7wS71g3yG\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"approval for payment\",\"col\":4}}]",
+ "creation": "2026-08-18 10:00:00",
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -12,7 +13,7 @@
  "is_hidden": 0,
  "label": "Cash and Bank",
  "links": [],
- "modified": "2026-08-18 10:00:00.000000",
+ "modified": "2026-09-25 10:30:51.386811",
  "modified_by": "Administrator",
  "module": "Cash and Bank",
  "name": "Cash and Bank",
@@ -20,7 +21,18 @@
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
- "quick_lists": [],
+ "quick_lists": [
+  {
+   "document_type": "Purchase Order",
+   "label": "po",
+   "quick_list_filter": "[]"
+  },
+  {
+   "document_type": "Approval for Payment",
+   "label": "approval for payment",
+   "quick_list_filter": "[]"
+  }
+ ],
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 1.0,

@@ -16,20 +16,25 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Purchase Order No.",
-   "options": "Purchase Order"
+   "options": "Purchase Order",
+   "reqd": 1
   },
   {
    "fieldname": "dated",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "Dated"
+   "label": "Dated",
+   "fetch_from": "purchase_order.transaction_date",
+   "read_only": 1
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Amount",
-   "options": "Company:company:default_currency"
+   "options": "Company:company:default_currency",
+   "read_only": 1,
+   "description": "Rounded Total of the Purchase Order (Grand Total if rounding is disabled)"
   },
   {
    "fieldname": "remarks",
@@ -41,7 +46,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-08-18 10:00:00.000000",
+ "modified": "2026-09-25 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "Cash and Bank",
  "name": "Approval for Payment Purchase Order",

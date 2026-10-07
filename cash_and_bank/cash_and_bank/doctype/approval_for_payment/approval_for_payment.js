@@ -1,7 +1,10 @@
 // Copyright (c) 2026, ATS Synthetic (Pvt) Ltd. and contributors
 // For license information, please see license.txt
 
-const DEFAULT_DOCS_ATTACHED = [
+// `var`, not `const`: Frappe can eval this script more than once per page
+// (e.g. after a doctype reload in developer mode), and redeclaring a
+// top-level const throws, killing every handler in this file.
+var DEFAULT_DOCS_ATTACHED = [
 	["P.O", "Purchase Order"],
 	["D.C", "Delivery Note"],
 	["I.G.P", "Custom IGP"],
@@ -23,8 +26,20 @@ frappe.ui.form.on("Approval for Payment", {
 			},
 		}));
 
+		// Draft + submitted POs; cancelled ones are never payable.
+		frm.set_query("purchase_order", "purchase_orders", () => ({
+			filters: {
+				supplier: frm.doc.supplier,
+				docstatus: ["!=", 2],
+			},
+		}));
+
 		frm.set_query("mode_of_payment", () => ({
 			filters: frm.doc.payment_mode ? { type: frm.doc.payment_mode } : {},
+		}));
+
+		frm.set_query("bank_account", () => ({
+			filters: company_bank_account_filters(frm),
 		}));
 	},
 
@@ -105,7 +120,41 @@ frappe.ui.form.on("Approval for Payment", {
 		}
 	},
 
+	company(frm) {
+		frm.set_value("bank_account", "");
+		frm.trigger("bank");
+	},
+
+	bank(frm) {
+		// Same idea as supplier -> payable_account: picking the bank fills
+		// in the company's account at that bank (default one first).
+		// Bank A/c No. and the GL account then come in via fetch_from.
+		frm.set_value("bank_account", "");
+		if (!frm.doc.bank || !frm.doc.company) return;
+
+		frappe.db
+			.get_list("Bank Account", {
+				filters: company_bank_account_filters(frm),
+				order_by: "is_default desc, modified desc",
+				limit: 1,
+			})
+			.then((rows) => {
+				if (rows && rows.length) {
+					frm.set_value("bank_account", rows[0].name);
+				} else {
+					frappe.show_alert({
+						message: __("No Bank Account found for {0} in {1}", [frm.doc.bank, frm.doc.company]),
+						indicator: "orange",
+					});
+				}
+			});
+	},
+
 	payment_mode(frm) {
+		if (frm.doc.payment_mode !== "Bank") {
+			frm.set_value("bank", "");
+			frm.set_value("bank_account", "");
+		}
 		if (frm.doc.payment_mode) {
 			frappe.db
 				.get_list("Mode of Payment", {
@@ -141,40 +190,75 @@ frappe.ui.form.on("Approval for Payment", {
 	other_deduction: calc,
 });
 
+frappe.ui.form.on("Approval for Payment Purchase Order", {
+	purchase_order(frm, cdt, cdn) {
+		// Preview only — validate() re-reads these from the PO on every save.
+		// Same rule as get_purchase_order_details() in the .py.
+		const row = locals[cdt][cdn];
+		if (!row.purchase_order) {
+			frappe.model.set_value(cdt, cdn, { dated: "", amount: 0 });
+			return;
+		}
+		frappe.db
+			.get_value("Purchase Order", row.purchase_order, ["transaction_date", "grand_total", "rounded_total"])
+			.then((r) => {
+				const po = r.message || {};
+				frappe.model.set_value(cdt, cdn, {
+					dated: po.transaction_date,
+					amount: flt(po.rounded_total) || flt(po.grand_total),
+				});
+			});
+	},
+});
+
 function calc(frm) {
 	// Client-side preview only — the server recomputes everything in
 	// validate() with the same formulas, and that's the source of truth.
 	const value_ex_tax = flt(frm.doc.value_ex_tax);
-	let sales_tax = flt(frm.doc.sales_tax);
+	let sales_tax = round_half_up(frm.doc.sales_tax);
 	if (flt(frm.doc.sales_tax_rate)) {
-		sales_tax = flt((value_ex_tax * frm.doc.sales_tax_rate) / 100, 2);
-		frm.set_value("sales_tax", sales_tax);
+		sales_tax = round_half_up((value_ex_tax * frm.doc.sales_tax_rate) / 100);
 	}
+	frm.set_value("sales_tax", sales_tax);
 
-	const total_value = flt(value_ex_tax + sales_tax, 2);
+	const total_value = round_half_up(value_ex_tax + sales_tax);
 	frm.set_value("total_value", total_value);
 
-	let itax_amount = flt(frm.doc.itax_amount);
+	let itax_amount = round_half_up(frm.doc.itax_amount);
 	if (flt(frm.doc.itax_rate)) {
-		itax_amount = flt((total_value * frm.doc.itax_rate) / 100, 2);
-		frm.set_value("itax_amount", itax_amount);
+		itax_amount = round_half_up((total_value * frm.doc.itax_rate) / 100);
 	}
+	frm.set_value("itax_amount", itax_amount);
 
-	let stw_amount = flt(frm.doc.stw_amount);
+	let stw_amount = round_half_up(frm.doc.stw_amount);
 	if (flt(frm.doc.stw_rate)) {
-		stw_amount = flt((total_value * frm.doc.stw_rate) / 100, 2);
-		frm.set_value("stw_amount", stw_amount);
+		stw_amount = round_half_up((total_value * frm.doc.stw_rate) / 100);
 	}
+	frm.set_value("stw_amount", stw_amount);
 
-	const net_payment = flt(
-		total_value - flt(frm.doc.less_advance) - itax_amount - stw_amount - flt(frm.doc.other_deduction),
-		2
+	const net_payment = round_half_up(
+		total_value - flt(frm.doc.less_advance) - itax_amount - stw_amount - flt(frm.doc.other_deduction)
 	);
 	frm.set_value("net_payment", net_payment);
 }
 
-function flt(v) {
-	return frappe.utils && frappe.utils.flt ? frappe.utils.flt(v) : parseFloat(v) || 0;
+function company_bank_account_filters(frm) {
+	const filters = { is_company_account: 1, disabled: 0 };
+	if (frm.doc.company) filters.company = frm.doc.company;
+	if (frm.doc.bank) filters.bank = frm.doc.bank;
+	return filters;
+}
+
+// NOTE: don't define helpers named flt/cint/etc. here — Frappe evals form
+// scripts in the global scope, so they'd replace Frappe's own globals for
+// the whole desk. Frappe's global flt() is used below.
+
+// Same as round_half_up() in approval_for_payment.py: nearest whole rupee,
+// .5 goes away from zero (5.5 -> 6, -5.5 -> -6). Trimming to 6 decimals
+// first stops float noise like 2.4999999999 rounding the wrong way.
+function round_half_up(v) {
+	const n = Number(flt(v).toFixed(6));
+	return Math.sign(n) * Math.round(Math.abs(n));
 }
 
 // ---------------------------------------------------------------------
@@ -230,6 +314,7 @@ function open_write_cheque_dialog(frm) {
 					fieldname: "bank_account_no",
 					fieldtype: "Data",
 					label: __("Bank A/c No:"),
+					default: frm.doc.bank_account_no,
 				},
 				{
 					fieldname: "title",
