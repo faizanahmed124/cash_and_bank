@@ -226,7 +226,8 @@ function calc(frm) {
 
 	let itax_amount = round_half_up(frm.doc.itax_amount);
 	if (flt(frm.doc.itax_rate)) {
-		itax_amount = round_half_up((total_value * frm.doc.itax_rate) / 100);
+		// Income Tax Withheld is charged on the value excluding sales tax, not the total
+		itax_amount = round_half_up((value_ex_tax * frm.doc.itax_rate) / 100);
 	}
 	frm.set_value("itax_amount", itax_amount);
 
