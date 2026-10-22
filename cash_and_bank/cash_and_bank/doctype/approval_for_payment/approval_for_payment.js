@@ -232,7 +232,8 @@ function calc(frm) {
 
 	let stw_amount = round_half_up(frm.doc.stw_amount);
 	if (flt(frm.doc.stw_rate)) {
-		stw_amount = round_half_up((total_value * frm.doc.stw_rate) / 100);
+		// Sales Tax Withheld is charged on the Sales Tax amount, not the total
+		stw_amount = round_half_up((sales_tax * frm.doc.stw_rate) / 100);
 	}
 	frm.set_value("stw_amount", stw_amount);
 

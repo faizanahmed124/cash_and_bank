@@ -118,8 +118,10 @@ class ApprovalforPayment(Document):
 		else:
 			self.itax_amount = round_half_up(self.itax_amount)
 
+		# Sales Tax Withheld is charged on the Sales Tax amount, not the total:
+		# e.g. Sales Tax 36,000 x 1% = 360
 		if stw_rate:
-			self.stw_amount = round_half_up(taxable_base * stw_rate / 100)
+			self.stw_amount = round_half_up(flt(self.sales_tax) * stw_rate / 100)
 		else:
 			self.stw_amount = round_half_up(self.stw_amount)
 
