@@ -111,10 +111,10 @@ class ApprovalforPayment(Document):
 
 		self.total_value = round_half_up(value_ex_tax + self.sales_tax)
 
-		# Income Tax Withheld is charged on the value excluding sales tax,
-		# not the total: e.g. 200,000 x 2% = 4,000
+		# Income Tax Withheld is charged on the TOTAL Value (incl. sales tax):
+		# e.g. 236,000 x 2% = 4,720
 		if itax_rate:
-			self.itax_amount = round_half_up(value_ex_tax * itax_rate / 100)
+			self.itax_amount = round_half_up(self.total_value * itax_rate / 100)
 		else:
 			self.itax_amount = round_half_up(self.itax_amount)
 
